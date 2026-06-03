@@ -81,43 +81,19 @@ for key in _SECRET_KEYS:
         os.environ[key] = str(st.secrets[key])
 
 # ── Flask port ───────────────────────────────────────────────
+# Port used for local testing (optional)
 FLASK_PORT = 5000
-FLASK_URL  = f"http://localhost:{FLASK_PORT}"
+# Public Flask URL – set FLASK_PUBLIC_URL in Streamlit secrets for deployed environments.
+# Falls back to localhost for local development.
+FLASK_URL = os.getenv("FLASK_PUBLIC_URL", f"http://localhost:{FLASK_PORT}")
 
 
 # ── Start Flask in a background thread ──────────────────────
-@st.cache_resource
-def start_flask():
-    """Starts Flask once and caches the thread."""
-    # Import here so env vars are set first
-    from app import app as flask_app
-
-    def run():
-        flask_app.run(
-            host="0.0.0.0",
-            port=FLASK_PORT,
-            debug=False,
-            use_reloader=False,
-            threaded=True
-        )
-
-    t = threading.Thread(target=run, daemon=True)
-    t.start()
-    return t
+// Removed embedded Flask server start – the Flask app should be hosted separately.
+// The background thread is no longer needed when FLASK_URL points to an external service.
 
 
-def wait_for_flask(timeout: int = 15) -> bool:
-    """Poll Flask until it responds or timeout (seconds)."""
-    start = time.time()
-    while time.time() - start < timeout:
-        try:
-            r = requests.get(FLASK_URL, timeout=2)
-            if r.status_code < 500:
-                return True
-        except Exception:
-            pass
-        time.sleep(0.5)
-    return False
+// Removed wait_for_flask – not needed when embedding an external Flask URL.
 
 
 # ── Streamlit page config ────────────────────────────────────
@@ -140,15 +116,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ── Start Flask ──────────────────────────────────────────────
-start_flask()
-
-# ── Wait for Flask to be ready ───────────────────────────────
-with st.spinner("🚀 Starting Voyager AI…"):
-    ready = wait_for_flask(timeout=20)
-
-if not ready:
-    st.error("⚠️ Flask server didn't start in time. Please refresh the page.")
-    st.stop()
+// No need to start or wait for Flask – assume FLASK_URL is reachable.
+with st.spinner("🚀 Loading Voyager AI…"):
+    # Optionally, you could probe the URL here, but Streamlit Cloud will load the iframe directly.
+    pass
 
 # ── Embed Flask via iframe ───────────────────────────────────
 st.markdown(

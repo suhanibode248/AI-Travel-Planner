@@ -424,5 +424,7 @@ def rate_limited(e):
 #  RUN
 # ══════════════════════════════════════════════════════════════
 if __name__ == "__main__":
-    print("🚀 Voyager AI v3 starting…")
-    app.run(debug=True)
+    # Render/Render.com and many PaaS providers expose the port via the PORT env var
+    port = int(os.getenv("PORT", 5000))
+    print(f"🚀 Voyager AI starting on port {port} …")
+    app.run(host="0.0.0.0", port=port, debug=False)
