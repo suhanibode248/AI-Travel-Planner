@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AI Smart Eco Travel Planner
 
 ## Project Title
@@ -85,3 +86,6 @@ The project provides an efficient and smart way to plan trips by combining multi
 [1] OpenWeather API – https://openweathermap.org/
 [2] Google Maps API – https://developers.google.com/maps
 [3] Web Speech API – MDN Docs
+=======
+# AI-Travel-Planner
+>>>>>>> 06e4fd969dd634023be6619853b0c2c6c7eefe38
