@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voyager AI — Dashboard</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sand: #F5F0E8; --sand-2: #EDE7D9; --dark: #0D1117; --dark-card: #1C2333;
+      --amber: #C9853A; --amber-light: #E8A85A; --amber-pale: rgba(201,133,58,0.12);
+      --text: #1A1A2E; --muted: #6B7280; --muted-2: #9CA3AF;
+      --border: #E0D9CD; --border-dark: rgba(255,255,255,0.08);
+      --success: #1D9E75; --danger: #E23744;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --radius-sm: 8px; --radius-md: 12px; --radius-lg: 18px; --radius-xl: 24px;
+      --shadow-sm: 0 1px 4px rgba(0,0,0,0.06); --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+      --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+    }
+    body { font-family: var(--font-body); background: var(--sand); color: var(--text); min-height: 100vh; }
+
+    /* ── Header ── */
+    .site-header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--sand); border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+    .header-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      height: 60px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { font-family: var(--font-display); font-size: 22px; color: var(--text); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--amber); display: inline-block; }
+    .header-nav { display: flex; align-items: center; gap: 12px; }
+    .nav-link { font-size: 13px; color: var(--muted); text-decoration: none; padding: 7px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); transition: all var(--transition); }
+    .nav-link:hover { border-color: var(--amber); color: var(--amber); }
+    .nav-link.primary { background: var(--text); color: #fff; border-color: var(--text); }
+    .nav-link.primary:hover { background: var(--amber); border-color: var(--amber); }
+    .nav-logout { font-size: 13px; color: var(--muted); text-decoration: none; }
+    .nav-logout:hover { color: var(--danger); }
+
+    /* ── Page layout ── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* ── Welcome banner ── */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--dark) 0%, #1a2537 100%);
+      border-radius: var(--radius-xl); padding: 36px 40px;
+      margin-bottom: 32px; position: relative; overflow: hidden;
+    }
+    .welcome-banner::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 80% 50%, rgba(201,133,58,0.25) 0%, transparent 60%);
+    }
+    .welcome-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(201,133,58,0.2); border: 1px solid rgba(201,133,58,0.4);
+      color: var(--amber-light); font-size: 11px; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 5px 12px; border-radius: 20px; margin-bottom: 14px;
+    }
+    .welcome-title { font-family: var(--font-display); font-size: 32px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .welcome-title em { color: var(--amber-light); font-style: italic; }
+    .welcome-sub { font-size: 14px; color: rgba(255,255,255,0.5); max-width: 400px; line-height: 1.6; }
+
+    /* ── Stats row ── */
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 36px; }
+    .stat-card {
+      background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 20px 24px; display: flex; align-items: center; gap: 16px;
+      box-shadow: var(--shadow-sm); transition: box-shadow var(--transition);
+    }
+    .stat-card:hover { box-shadow: var(--shadow-md); }
+    .stat-icon { width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--amber-pale); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .stat-val { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: var(--amber); line-height: 1; margin-bottom: 4px; }
+    .stat-label { font-size: 12px; color: var(--muted); }
+
+    /* ── Section title ── */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .section-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--text); }
+    .section-count { font-size: 13px; color: var(--muted); background: var(--sand-2); padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); }
+
+    /* ── Trip cards grid ── */
+    .trips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+    .trip-card {
+      background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+      padding: 24px; box-shadow: var(--shadow-sm); transition: all var(--transition);
+      display: flex; flex-direction: column; gap: 16px;
+      animation: fadeUp 0.4s ease both;
+    }
+    .trip-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+    .trip-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .trip-dest { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text); }
+    .trip-type-badge {
+      font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px;
+      background: var(--amber-pale); color: var(--amber); border: 1px solid rgba(201,133,58,0.3);
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    .trip-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+    .trip-meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+    .trip-meta-icon { font-size: 15px; }
+
+    .trip-date { font-size: 11px; color: var(--muted-2); letter-spacing: 0.04em; }
+
+    .trip-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+
+    .btn {
+      padding: 8px 14px; border-radius: var(--radius-sm); font-family: var(--font-body);
+      font-size: 12px; font-weight: 500; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 5px; border: none;
+      transition: all var(--transition); white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); opacity: 0.9; }
+    .btn-view   { background: var(--text); color: #fff; }
+    .btn-share  { background: #E3F2FD; color: #0D47A1; }
+    .btn-delete { background: #FFEBEE; color: var(--danger); margin-left: auto; }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center; padding: 72px 24px;
+      background: #fff; border: 1px solid var(--border); border-radius: var(--radius-xl);
+      border-style: dashed;
+    }
+    .empty-icon { font-size: 56px; margin-bottom: 16px; }
+    .empty-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .empty-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; max-width: 320px; margin-left: auto; margin-right: auto; }
+    .btn-cta { padding: 13px 28px; background: var(--amber); color: #fff; border: none; border-radius: var(--radius-md); font-family: var(--font-body); font-size: 15px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; transition: background var(--transition); }
+    .btn-cta:hover { background: var(--text); }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--text); color: #fff; padding: 12px 24px;
+      border-radius: 30px; font-size: 14px; font-weight: 500;
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      z-index: 9999; white-space: nowrap; pointer-events: none;
+    }
+    .toast.show  { transform: translateX(-50%) translateY(0); }
+    .toast.success { background: var(--success); }
+    .toast.error   { background: var(--danger); }
+
+    /* ── Destinations list ── */
+    .destinations-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
+    .dest-chip {
+      background: #fff; border: 1px solid var(--border); border-radius: 20px;
+      padding: 6px 14px; font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 6px;
+    }
+
+    @media (max-width: 768px) {
+      .welcome-banner { padding: 24px 20px; }
+      .welcome-title { font-size: 24px; }
+      .page { padding: 24px 16px 60px; }
+      .trips-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="/home" class="logo">Voyager <span class="logo-dot"></span></a>
+    <nav class="header-nav">
+      <a href="/home" class="nav-link primary">✦ Plan a Trip</a>
+      <a href="/logout" class="nav-logout">Sign out</a>
+    </nav>
+  </div>
+</header>
+
+<div class="toast" id="toast"></div>
+
+<div class="page">
+
+  <!-- WELCOME BANNER -->
+  <div class="welcome-banner">
+    <div class="welcome-tag">✦ Your Travel Hub</div>
+    <h1 class="welcome-title">Welcome back, <em>{{ user.name.split()[0] }}</em></h1>
+    <p class="welcome-sub">Here are all your saved trips. Share them with friends or pick up where you left off.</p>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-icon">🗺️</div>
+      <div>
+        <div class="stat-val">{{ trips|length }}</div>
+        <div class="stat-label">Trips saved</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📍</div>
+      <div>
+        <div class="stat-val">{{ destinations|length }}</div>
+        <div class="stat-label">Unique destinations</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div>
+        <div class="stat-val">₹{{ "{:,}".format(total_budget) }}</div>
+        <div class="stat-label">Total budget planned</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🧳</div>
+      <div>
+        <div class="stat-val">{{ fav_type }}</div>
+        <div class="stat-label">Favourite trip type</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DESTINATIONS VISITED -->
+  {% if destinations %}
+  <div class="destinations-row">
+    {% for dest in destinations %}
+      <span class="dest-chip">📍 {{ dest }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- TRIPS -->
+  <div class="section-header">
+    <div class="section-title">Your saved trips</div>
+    <span class="section-count">{{ trips|length }} trip{{ 's' if trips|length != 1 }}</span>
+  </div>
+
+  {% if trips %}
+  <div class="trips-grid">
+    {% for trip in trips %}
+    <div class="trip-card" style="animation-delay: {{ loop.index0 * 0.07 }}s">
+
+      <div class="trip-card-top">
+        <div class="trip-dest">📍 {{ trip.destination }}</div>
+        <span class="trip-type-badge">{{ trip.trip_type }}</span>
+      </div>
+
+      <div class="trip-meta">
+        {% if trip.days %}
+        <div class="trip-meta-item">
+          <span class="trip-meta-icon">📅</span>
+          <span>{{ trip.days }} day{{ 's' if trip.days != 1 }}</span>
+        </div>
+        {% endif %}
+        {% if trip.budget %}
+        <div class="trip-meta-item">
+          <span class="trip-meta-icon">💰</span>
+          <span>₹{{ "{:,}".format(trip.budget) }}</span>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="trip-date">Saved on {{ trip.created_at.strftime('%d %b %Y, %I:%M %p') }}</div>
+
+      <div class="trip-actions">
+        <a href="/trip/{{ trip.share_id }}" target="_blank" class="btn btn-view">👁 View</a>
+        <button class="btn btn-share" onclick="copyShareLink('{{ request.host_url }}trip/{{ trip.share_id }}')">🔗 Copy link</button>
+        <button class="btn btn-delete" onclick="deleteTrip({{ trip.id }}, this)">🗑 Delete</button>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <!-- EMPTY STATE -->
+  <div class="empty-state">
+    <div class="empty-icon">🗺️</div>
+    <div class="empty-title">No trips saved yet</div>
+    <p class="empty-sub">Generate your first AI itinerary and save it here to access it anytime.</p>
+    <a href="/home" class="btn-cta">✦ Plan your first trip</a>
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = 'toast show ' + type;
+    setTimeout(() => t.className = 'toast', 3400);
+  }
+
+  function copyShareLink(url) {
+    navigator.clipboard.writeText(url)
+      .then(() => showToast('📋 Link copied!', 'success'))
+      .catch(() => showToast('❌ Could not copy link', 'error'));
+  }
+
+  async function deleteTrip(tripId, btn) {
+    if (!confirm('Delete this trip? This cannot be undone.')) return;
+    try {
+      const res = await fetch(`/delete-trip/${tripId}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.status === 'deleted') {
+        const card = btn.closest('.trip-card');
+        card.style.transition = 'all 0.3s ease';
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.95)';
+        setTimeout(() => { card.remove(); showToast('🗑 Trip deleted', 'success'); }, 300);
+      }
+    } catch (e) {
+      showToast('❌ Could not delete trip', 'error');
+    }
+  }
+
+  // Show toast for URL params
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('success')) showToast('✅ ' + p.get('success'), 'success');
+  if (p.get('error'))   showToast('❌ ' + p.get('error'), 'error');
+</script>
+</body>
+</html>
