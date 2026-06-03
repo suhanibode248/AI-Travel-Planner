@@ -8,9 +8,14 @@ load_dotenv()
 
 # Pull secrets from st.secrets if deployed on Streamlit Cloud
 import os
-for key in ["OPENROUTER_API_KEY", "MAIL_SERVER", "MAIL_PORT", "MAIL_USE_TLS", "MAIL_USERNAME", "MAIL_PASSWORD", "MAIL_DEFAULT_SENDER"]:
-    if key in st.secrets:
-        os.environ[key] = str(st.secrets[key])
+try:
+    for key in ["OPENROUTER_API_KEY", "MAIL_SERVER", "MAIL_PORT", "MAIL_USE_TLS", "MAIL_USERNAME", "MAIL_PASSWORD", "MAIL_DEFAULT_SENDER"]:
+        if key in st.secrets:
+            os.environ[key] = str(st.secrets[key])
+except FileNotFoundError:
+    pass # Locally, we use .env instead of secrets.toml
+except Exception:
+    pass
 
 from db import init_db, get_db, User, SavedTrip, hash_password, check_password
 from ai_service import generate_with_ai, generate_static_fallback
