@@ -35,14 +35,15 @@ function showToast(msg, type = '') {
 function toggleDarkMode() {
   document.body.classList.toggle('dark');
   const icon = document.querySelector('.toggle-icon');
-  if (icon) icon.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+  if (icon) icon.setAttribute('data-lucide', document.body.classList.contains('dark') ? 'sun' : 'moon');
   localStorage.setItem('voyager_dark', document.body.classList.contains('dark'));
+  if (window.lucide) lucide.createIcons();
 }
 
 if (localStorage.getItem('voyager_dark') === 'true') {
   document.body.classList.add('dark');
   const icon = document.querySelector('.toggle-icon');
-  if (icon) icon.textContent = '☀️';
+  if (icon) icon.setAttribute('data-lucide', 'sun');
 }
 
 // ─── Slide navigation ──────────────────
@@ -647,6 +648,7 @@ async function generatePlan() {
 
     document.getElementById('tabs').innerHTML   = tabsHTML;
     document.getElementById('result').innerHTML = contentHTML;
+    if (window.lucide) lucide.createIcons();
 
     // Render charts + weather
     data.forEach((city, index) => {

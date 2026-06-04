@@ -1,91 +1,76 @@
-<<<<<<< HEAD
 # AI Smart Eco Travel Planner
 
-## Project Title
-
-AI Smart Eco Travel Planner
-
-## Author(s)
-
-Suhani Bode
-
-## Affiliation
-
-Computer Science Engineering and Data Science
-
-## Date
-
-April 2026
+AI Smart Eco Travel Planner is a Streamlit app that creates travel itineraries from a destination, trip duration, budget, and trip type. It can use OpenRouter for AI-generated plans and falls back to local static data when no API key is configured.
 
 ---
 
-## Abstract
+## Features
 
-This project presents a web-based AI Smart Eco Travel Planner that simplifies trip planning. It generates a day-wise itinerary based on user inputs like city, number of days, and budget. The system integrates features such as hotel recommendations, budget analysis, weather updates, Google Maps, and a voice assistant. It reduces planning time and provides a user-friendly travel solution.
-
----
-
-## Introduction
-
-Travel planning is often complex and time-consuming. Users need multiple platforms for hotels, maps, and weather. This project aims to create a single platform that provides complete travel planning with smart features and easy interaction.
-
----
-
-## Literature Review
-
-Existing platforms like TripAdvisor and Google Travel provide travel information but lack integrated planning and voice interaction. This project combines itinerary generation, APIs, and voice assistance in one system.
+- Streamlit-only deployment entry point: `streamlit_app.py`
+- Login and registration with SQLite-backed users
+- AI-generated itinerary support through OpenRouter
+- Static fallback itinerary data for demos without an API key
+- Saved trips and shareable trip IDs
+- Optional email itinerary sending through SMTP secrets
 
 ---
 
-## Methodology
+## Local Setup
 
-The system takes user inputs (city, days, budget) and calculates daily budget. It generates a day-wise itinerary, suggests hotels and transport, and shows weather and maps using APIs. Voice assistant allows automatic input through speech.
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the Streamlit app:
+
+```bash
+streamlit run streamlit_app.py
+```
 
 ---
 
-## Implementation
+## Streamlit Cloud Deployment
 
-Programming Languages: HTML, CSS, JavaScript
-APIs: OpenWeather API, Google Maps API
-Tools: VS Code, Live Server, Browser
+When creating the Streamlit Cloud app, set:
 
----
+```text
+Main file path: streamlit_app.py
+```
 
-## Results and Discussion
+Add this secret in Streamlit Cloud if you want AI generation:
 
-The system successfully generates travel plans with budget breakdown, hotels, and maps. Voice assistant improves usability. It reduces effort and provides a smooth user experience.
+```toml
+OPENROUTER_API_KEY = "your_openrouter_api_key"
+```
+
+Optional email secrets:
+
+```toml
+MAIL_SERVER = "smtp.gmail.com"
+MAIL_PORT = "587"
+MAIL_USE_TLS = "True"
+MAIL_USERNAME = "your_email@gmail.com"
+MAIL_PASSWORD = "your_email_app_password"
+MAIL_DEFAULT_SENDER = "your_email@gmail.com"
+```
+
+Do not commit `.env` or `.streamlit/secrets.toml`.
 
 ---
 
 ## Limitations
 
-* Limited cities
-* Requires internet for APIs
-* No real-time booking
-* Voice assistant browser-dependent
+- SQLite data on Streamlit Cloud is suitable for demos, but it is ephemeral and not ideal for production persistence.
+- AI generation requires an internet connection and a valid OpenRouter API key.
+- Email sending requires valid SMTP credentials.
 
 ---
 
 ## Future Scope
 
-* Add more destinations
-* AI-based recommendations
-* Booking system integration
-* Mobile app version
-
----
-
-## Conclusion
-
-The project provides an efficient and smart way to plan trips by combining multiple features into one platform, improving user convenience.
-
----
-
-## References
-
-[1] OpenWeather API – https://openweathermap.org/
-[2] Google Maps API – https://developers.google.com/maps
-[3] Web Speech API – MDN Docs
-=======
-# AI-Travel-Planner
->>>>>>> 06e4fd969dd634023be6619853b0c2c6c7eefe38
+- Add more destinations and richer static fallback data
+- Move persistence to a hosted database
+- Add booking integrations
+- Add real-time weather and map integrations

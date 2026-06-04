@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Voyager AI — Plan Your Trip</title>
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="/static/style.css">
 </head>
@@ -17,20 +18,20 @@
   <!-- HEADER -->
   <header class="site-header">
     <div class="header-inner">
-      <div class="logo">Voyager <span class="logo-dot"></span></div>
+      <div class="logo"><span class="logo-mark">V</span> Voyager</div>
       <nav class="header-nav">
-        <button class="btn-icon" onclick="printItinerary()" id="printBtn" title="Print itinerary" style="display:none">🖨️</button>
-        <button class="btn-icon" onclick="downloadPDF()" id="pdfBtn" title="Download PDF" style="display:none">⬇️</button>
+        <button class="btn-icon" onclick="printItinerary()" id="printBtn" title="Print itinerary" aria-label="Print itinerary" style="display:none"><i data-lucide="printer"></i></button>
+        <button class="btn-icon" onclick="downloadPDF()" id="pdfBtn" title="Download PDF" aria-label="Download PDF" style="display:none"><i data-lucide="download"></i></button>
         <button class="dark-toggle" onclick="toggleDarkMode()" title="Toggle dark mode">
-          <span class="toggle-icon">🌙</span>
+          <i class="toggle-icon" data-lucide="moon"></i>
         </button>
 
         {% if user %}
-          <a href="/dashboard" class="nav-link">📊 Dashboard</a>
-          <span class="nav-user">👋 {{ user.name.split()[0] }}</span>
+          <a href="/dashboard" class="nav-link"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+          <span class="nav-user">{{ user.name.split()[0] }}</span>
           <a href="/logout" class="nav-logout">Sign out</a>
         {% else %}
-          <a href="/" class="nav-logout">← Sign in</a>
+          <a href="/" class="nav-logout">Sign in</a>
         {% endif %}
       </nav>
     </div>
@@ -42,25 +43,36 @@
   <!-- ═══════════════════════════ INPUT SLIDE ═══════════════════════════ -->
   <div id="inputSlide" class="slide active">
 
-    <section class="hero">
-      <div class="hero-bg"></div>
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-bg" role="img" aria-label="Scenic mountain lake at sunrise"></div>
       <div class="hero-content">
-        <span class="hero-tag">✦ AI-Powered Itineraries</span>
-        <h1 class="hero-title">Where to <em>next?</em></h1>
-        <p class="hero-sub">Describe your dream trip and let AI handle the details — hotels, food, transport, and budget — all in one plan.</p>
+        <span class="hero-tag"><i data-lucide="sparkles"></i> AI travel studio</span>
+        <h1 id="heroTitle" class="hero-title">Plan the trip you can actually take.</h1>
+        <p class="hero-sub">Build a practical itinerary with stays, food, transport, packing notes, weather, and a budget split in one clean workspace.</p>
+        <div class="hero-metrics" aria-label="Voyager highlights">
+          <span><strong>2 min</strong> to a full draft</span>
+          <span><strong>Multi-city</strong> ready</span>
+          <span><strong>Shareable</strong> plans</span>
+        </div>
       </div>
     </section>
 
     <div class="planner-wrap">
       <div class="planner-card">
-        <h2 class="planner-title">Build your itinerary</h2>
+        <div class="planner-head">
+          <div>
+            <p class="eyebrow">Trip details</p>
+            <h2 class="planner-title">Build your itinerary</h2>
+          </div>
+          <span class="planner-chip">Personalized</span>
+        </div>
 
         <div class="form-grid">
 
           <div class="field-group full">
             <label class="field-label">Destination(s)</label>
             <div class="input-wrap">
-              <span class="input-icon">📍</span>
+              <i class="input-icon" data-lucide="map-pin"></i>
               <input id="destination" type="text" placeholder="Mumbai, Goa or Tokyo, Kyoto" autocomplete="off">
             </div>
             <span class="field-hint">Separate multiple cities with a comma for a multi-city trip</span>
@@ -69,7 +81,7 @@
           <div class="field-group">
             <label class="field-label">Duration</label>
             <div class="input-wrap">
-              <span class="input-icon">📅</span>
+              <i class="input-icon" data-lucide="calendar-days"></i>
               <input id="days" type="number" min="1" max="60" placeholder="Days (e.g. 7)">
             </div>
           </div>
@@ -89,19 +101,19 @@
             <div class="trip-type-grid">
               <label class="trip-option">
                 <input type="radio" name="trip_type" value="Solo" checked>
-                <span class="trip-btn"><span class="trip-emoji">🧳</span><span>Solo</span></span>
+                <span class="trip-btn"><i data-lucide="user"></i><span>Solo</span></span>
               </label>
               <label class="trip-option">
                 <input type="radio" name="trip_type" value="Family">
-                <span class="trip-btn"><span class="trip-emoji">👨‍👩‍👧</span><span>Family</span></span>
+                <span class="trip-btn"><i data-lucide="users-round"></i><span>Family</span></span>
               </label>
               <label class="trip-option">
                 <input type="radio" name="trip_type" value="Friends">
-                <span class="trip-btn"><span class="trip-emoji">👯</span><span>Friends</span></span>
+                <span class="trip-btn"><i data-lucide="party-popper"></i><span>Friends</span></span>
               </label>
               <label class="trip-option">
                 <input type="radio" name="trip_type" value="Honeymoon">
-                <span class="trip-btn"><span class="trip-emoji">💑</span><span>Honeymoon</span></span>
+                <span class="trip-btn"><i data-lucide="heart"></i><span>Honeymoon</span></span>
               </label>
             </div>
           </div>
@@ -109,8 +121,8 @@
         </div>
 
         <button class="generate-btn" onclick="generatePlan()">
-          <span class="btn-text">✦ Generate My Plan</span>
-          <span class="btn-arrow">→</span>
+          <span class="btn-text"><i data-lucide="sparkles"></i> Generate my plan</span>
+          <i class="btn-arrow" data-lucide="arrow-right"></i>
         </button>
 
         <div id="loading-state" class="loading-state hidden">
@@ -122,24 +134,24 @@
 
       <!-- RESUME LAST TRIP -->
       <div id="resumeCard" class="resume-card" style="display:none">
-        <span class="resume-icon">🕐</span>
+        <span class="resume-icon"><i data-lucide="history"></i></span>
         <div class="resume-info">
           <div class="resume-title">Resume your last trip</div>
           <div class="resume-meta" id="resumeMeta"></div>
         </div>
-        <button class="btn-resume" onclick="resumeLastTrip()">Resume →</button>
+        <button class="btn-resume" onclick="resumeLastTrip()">Resume <i data-lucide="arrow-right"></i></button>
       </div>
 
       <!-- QUICK PICKS -->
       <div class="quick-picks">
         <p class="quick-label">Popular right now</p>
         <div class="quick-tags">
-          <button class="quick-tag" onclick="fillDestination('Goa')">🏖 Goa</button>
-          <button class="quick-tag" onclick="fillDestination('Jaipur')">🏰 Jaipur</button>
-          <button class="quick-tag" onclick="fillDestination('Manali')">🏔 Manali</button>
-          <button class="quick-tag" onclick="fillDestination('Kerala')">🌴 Kerala</button>
-          <button class="quick-tag" onclick="fillDestination('Varanasi')">🕌 Varanasi</button>
-          <button class="quick-tag" onclick="fillDestination('Mumbai, Goa')">🌊 Mumbai + Goa</button>
+          <button class="quick-tag" onclick="fillDestination('Goa')">Goa</button>
+          <button class="quick-tag" onclick="fillDestination('Jaipur')">Jaipur</button>
+          <button class="quick-tag" onclick="fillDestination('Manali')">Manali</button>
+          <button class="quick-tag" onclick="fillDestination('Kerala')">Kerala</button>
+          <button class="quick-tag" onclick="fillDestination('Varanasi')">Varanasi</button>
+          <button class="quick-tag" onclick="fillDestination('Mumbai, Goa')">Mumbai + Goa</button>
         </div>
       </div>
 
@@ -150,14 +162,14 @@
   <div id="outputSlide" class="slide">
 
     <div class="output-header">
-      <button class="back-btn" onclick="goBack()">← Back</button>
+      <button class="back-btn" onclick="goBack()"><i data-lucide="arrow-left"></i> Back</button>
       <div class="output-title-area">
         <span id="output-dest-label" class="output-dest"></span>
         <span id="output-meta" class="output-meta"></span>
       </div>
       <div class="output-actions">
-        <button class="action-btn" onclick="openSaveModal()">💾 Save Trip</button>
-        <button class="action-btn" onclick="openEmailModal()">📧 Email Plan</button>
+        <button class="action-btn" onclick="openSaveModal()"><i data-lucide="bookmark-plus"></i> Save Trip</button>
+        <button class="action-btn" onclick="openEmailModal()"><i data-lucide="mail"></i> Email Plan</button>
       </div>
     </div>
 
@@ -173,11 +185,11 @@
   <div id="saveModal" class="modal-overlay" onclick="closeModal('saveModal')">
     <div class="modal-box" onclick="event.stopPropagation()">
       <div class="modal-header">
-        <div class="modal-title">💾 Save Trip</div>
+        <div class="modal-title"><i data-lucide="bookmark-plus"></i> Save Trip</div>
         <button class="modal-close" onclick="closeModal('saveModal')">✕</button>
       </div>
       <p class="modal-body">Save this itinerary to your dashboard and get a shareable link.</p>
-      <button class="modal-btn" onclick="saveTrip()">Save & Get Link →</button>
+      <button class="modal-btn" onclick="saveTrip()">Save and get link</button>
       <div id="saveResult" class="modal-result" style="display:none"></div>
     </div>
   </div>
@@ -186,19 +198,20 @@
   <div id="emailModal" class="modal-overlay" onclick="closeModal('emailModal')">
     <div class="modal-box" onclick="event.stopPropagation()">
       <div class="modal-header">
-        <div class="modal-title">📧 Email Itinerary</div>
+        <div class="modal-title"><i data-lucide="mail"></i> Email Itinerary</div>
         <button class="modal-close" onclick="closeModal('emailModal')">✕</button>
       </div>
       <p class="modal-body">Send this itinerary to your inbox.</p>
       <div class="modal-input-wrap">
         <input type="email" id="emailInput" placeholder="you@email.com" class="modal-input">
       </div>
-      <button class="modal-btn" onclick="emailItinerary()">Send Itinerary →</button>
+      <button class="modal-btn" onclick="emailItinerary()">Send itinerary</button>
       <div id="emailResult" class="modal-result" style="display:none"></div>
     </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="/static/script.js"></script>
+  <script>lucide.createIcons();</script>
 </body>
 </html>

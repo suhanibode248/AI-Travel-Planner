@@ -4,15 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Voyager AI — Sign In</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --sand: #F5F0E8;
-      --dark: #0D1117;
-      --amber: #C9853A;
-      --amber-light: #E8A85A;
+      --sand: #F7F5F0;
+      --dark: #101820;
+      --amber: #B96F34;
+      --amber-light: #F2B36D;
+      --green: #0F766E;
       --amber-pale: rgba(201,133,58,0.12);
       --text: #1A1A2E;
       --muted: #6B7280;
@@ -22,7 +23,7 @@
     }
 
     body {
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Manrope', sans-serif;
       height: 100vh;
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -42,8 +43,8 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse at 30% 70%, rgba(201,133,58,0.35) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 20%, rgba(201,133,58,0.15) 0%, transparent 50%);
+        linear-gradient(90deg, rgba(8,14,22,0.78), rgba(8,14,22,0.26)),
+        url("https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=1600&q=82") center/cover;
       z-index: 1;
     }
 
@@ -54,7 +55,7 @@
       grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr 1fr 1fr;
       gap: 3px;
-      opacity: 0.6;
+      opacity: 0;
       z-index: 0;
     }
 
@@ -193,7 +194,7 @@
     .auth-tab {
       flex: 1;
       padding: 10px;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-size: 13px;
       font-weight: 500;
       cursor: pointer;
@@ -233,8 +234,8 @@
       width: 100%;
       padding: 13px 14px 13px 42px;
       border: 1.5px solid var(--border);
-      border-radius: 10px;
-      font-family: 'DM Sans', sans-serif;
+      border-radius: 12px;
+      font-family: 'Manrope', sans-serif;
       font-size: 14px;
       background: #fff;
       color: var(--text);
@@ -264,7 +265,7 @@
       overflow: hidden;
     }
 
-    .submit-btn:hover { background: var(--amber); transform: translateY(-1px); }
+    .submit-btn:hover { background: var(--green); transform: translateY(-1px); }
     .submit-btn:active { transform: translateY(0); }
 
     .divider {
@@ -283,7 +284,7 @@
       background: transparent;
       border: 1.5px solid var(--border);
       border-radius: 10px;
-      font-family: 'DM Sans', sans-serif;
+      font-family: 'Manrope', sans-serif;
       font-size: 14px;
       color: var(--muted);
       cursor: pointer;

@@ -5,19 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Voyager AI — Dashboard</title>
   <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --sand: #F5F0E8; --sand-2: #EDE7D9; --dark: #0D1117; --dark-card: #1C2333;
-      --amber: #C9853A; --amber-light: #E8A85A; --amber-pale: rgba(201,133,58,0.12);
-      --text: #1A1A2E; --muted: #6B7280; --muted-2: #9CA3AF;
+      --sand: #F7F5F0; --sand-2: #ECE7DC; --dark: #101820; --dark-card: #17212B;
+      --amber: #B96F34; --amber-light: #F2B36D; --amber-pale: rgba(185,111,52,0.12);
+      --green: #0F766E; --green-pale: rgba(15,118,110,0.11);
+      --text: #14213D; --muted: #617083; --muted-2: #8894A3;
       --border: #E0D9CD; --border-dark: rgba(255,255,255,0.08);
       --success: #1D9E75; --danger: #E23744;
       --font-display: 'Playfair Display', Georgia, serif;
-      --font-body: 'DM Sans', system-ui, sans-serif;
-      --radius-sm: 8px; --radius-md: 12px; --radius-lg: 18px; --radius-xl: 24px;
-      --shadow-sm: 0 1px 4px rgba(0,0,0,0.06); --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+      --font-body: 'Manrope', system-ui, sans-serif;
+      --radius-sm: 8px; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 18px;
+      --shadow-sm: 0 1px 2px rgba(20,33,61,0.06); --shadow-md: 0 12px 30px rgba(20,33,61,0.09);
       --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
     }
     body { font-family: var(--font-body); background: var(--sand); color: var(--text); min-height: 100vh; }
@@ -47,13 +48,15 @@
 
     /* ── Welcome banner ── */
     .welcome-banner {
-      background: linear-gradient(135deg, var(--dark) 0%, #1a2537 100%);
+      background:
+        linear-gradient(90deg, rgba(16,24,32,0.92), rgba(16,24,32,0.58)),
+        url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=82") center/cover;
       border-radius: var(--radius-xl); padding: 36px 40px;
       margin-bottom: 32px; position: relative; overflow: hidden;
     }
     .welcome-banner::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 80% 50%, rgba(201,133,58,0.25) 0%, transparent 60%);
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,0.22));
     }
     .welcome-tag {
       display: inline-flex; align-items: center; gap: 6px;
@@ -73,8 +76,8 @@
       box-shadow: var(--shadow-sm); transition: box-shadow var(--transition);
     }
     .stat-card:hover { box-shadow: var(--shadow-md); }
-    .stat-icon { width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--amber-pale); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
-    .stat-val { font-family: var(--font-display); font-size: 24px; font-weight: 700; color: var(--amber); line-height: 1; margin-bottom: 4px; }
+    .stat-icon { width: 44px; height: 44px; border-radius: var(--radius-md); background: var(--green-pale); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .stat-val { font-family: var(--font-body); font-size: 24px; font-weight: 800; color: var(--green); line-height: 1; margin-bottom: 4px; }
     .stat-label { font-size: 12px; color: var(--muted); }
 
     /* ── Section title ── */
@@ -96,10 +99,10 @@
     @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
 
     .trip-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-    .trip-dest { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--text); }
+    .trip-dest { font-family: var(--font-body); font-size: 18px; font-weight: 800; color: var(--text); }
     .trip-type-badge {
       font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px;
-      background: var(--amber-pale); color: var(--amber); border: 1px solid rgba(201,133,58,0.3);
+      background: var(--green-pale); color: var(--green); border: 1px solid rgba(15,118,110,0.25);
       white-space: nowrap; flex-shrink: 0;
     }
 
@@ -132,7 +135,7 @@
     .empty-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
     .empty-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.6; max-width: 320px; margin-left: auto; margin-right: auto; }
     .btn-cta { padding: 13px 28px; background: var(--amber); color: #fff; border: none; border-radius: var(--radius-md); font-family: var(--font-body); font-size: 15px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; transition: background var(--transition); }
-    .btn-cta:hover { background: var(--text); }
+    .btn-cta:hover { background: var(--green); }
 
     /* ── Toast ── */
     .toast {
