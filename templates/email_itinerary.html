@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Voyager Itinerary — {{ destination }}</title>
+</head>
+<body style="margin:0;padding:0;background:#F7F5F0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#14213D;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F7F5F0;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:linear-gradient(135deg,#101820,#1a2a3a);border-radius:18px 18px 0 0;padding:40px 40px 36px;text-align:center;">
+              <div style="display:inline-block;background:#fff;border-radius:12px;width:48px;height:48px;line-height:48px;font-size:26px;font-family:Georgia,serif;font-weight:700;color:#14213D;margin-bottom:16px;">V</div>
+              <h1 style="font-family:Georgia,serif;font-size:32px;font-weight:700;color:#fff;margin:0 0 8px;line-height:1.2;">📍 {{ destination }}</h1>
+              <p style="color:rgba(255,255,255,0.6);font-size:14px;margin:0;">Your AI-crafted itinerary from Voyager</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="background:#fff;padding:36px 40px;">
+
+              <p style="font-size:16px;line-height:1.6;color:#14213D;margin:0 0 28px;">
+                Hi there! 👋<br><br>
+                Here's the full itinerary for your upcoming trip to <strong>{{ destination }}</strong>, crafted by Voyager AI.
+              </p>
+
+              {% for city_data in plan %}
+
+              {% if plan|length > 1 %}
+              <h2 style="font-family:Georgia,serif;font-size:22px;color:#0F766E;margin:0 0 16px;padding-bottom:10px;border-bottom:2px solid #ECE7DC;">
+                📍 {{ city_data.city }}
+              </h2>
+              {% endif %}
+
+              <!-- Day Plan -->
+              <h3 style="font-size:13px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#617083;margin:0 0 12px;">Day-by-Day Plan</h3>
+              {% set days = city_data.plan.split('\n') %}
+              {% for line in days %}{% if line.strip() %}
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
+                <tr>
+                  <td style="background:linear-gradient(135deg,rgba(15,118,110,0.08),rgba(185,111,52,0.08));border:1px solid rgba(15,118,110,0.12);border-radius:10px;padding:12px 16px;">
+                    <span style="font-size:10px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:#0F766E;background:#fff;border:1px solid rgba(15,118,110,0.2);padding:3px 10px;border-radius:999px;margin-right:10px;">Day {{ loop.index }}</span>
+                    <span style="font-size:14px;color:#14213D;">{{ line | replace('Day ' ~ loop.index ~ ': ', '') }}</span>
+                  </td>
+                </tr>
+              </table>
+              {% endif %}{% endfor %}
+
+              <!-- Hotels -->
+              {% if city_data.hotels %}
+              <h3 style="font-size:13px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#617083;margin:24px 0 12px;">🏨 Hotels</h3>
+              {% for h in city_data.hotels %}
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px;">
+                <tr>
+                  <td style="padding:10px 14px;background:#F7F5F0;border-radius:8px;font-size:14px;color:#14213D;">
+                    <strong>{{ h.name }}</strong>
+                    <span style="font-size:11px;color:#617083;margin-left:8px;">{{ h.type | capitalize }}</span>
+                  </td>
+                  <td align="right" style="padding:10px 14px;background:#F7F5F0;border-radius:8px;">
+                    <a href="{{ h.link }}" style="font-size:12px;font-weight:700;color:#0F766E;text-decoration:none;">Book →</a>
+                  </td>
+                </tr>
+              </table>
+              {% endfor %}
+              {% endif %}
+
+              <!-- Food -->
+              {% if city_data.food and city_data.food.street_food %}
+              <h3 style="font-size:13px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#617083;margin:24px 0 12px;">🍜 Must-Try Food</h3>
+              <p style="font-size:14px;color:#14213D;margin:0;">
+                {% for f in city_data.food.street_food %}{{ f }}{% if not loop.last %} · {% endif %}{% endfor %}
+              </p>
+              {% endif %}
+
+              <!-- Tips -->
+              {% if city_data.tips %}
+              <h3 style="font-size:13px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;color:#617083;margin:24px 0 12px;">💡 Travel Tips</h3>
+              {% for tip in city_data.tips %}
+              <p style="font-size:14px;color:#14213D;margin:0 0 8px;padding-left:16px;border-left:3px solid #B96F34;">{{ tip }}</p>
+              {% endfor %}
+              {% endif %}
+
+              {% if not loop.last %}<hr style="border:none;border-top:1px solid #ECE7DC;margin:28px 0;">{% endif %}
+              {% endfor %}
+
+            </td>
+          </tr>
+
+          <!-- CTA -->
+          <tr>
+            <td style="background:#F7F5F0;padding:28px 40px;text-align:center;border-radius:0 0 18px 18px;border:1px solid #DCD5C8;border-top:none;">
+              <p style="font-size:14px;color:#617083;margin:0 0 16px;">Want to modify this plan or create a new one?</p>
+              <a href="https://voyager.ai/home" style="display:inline-block;background:#14213D;color:#fff;font-size:14px;font-weight:700;padding:13px 28px;border-radius:10px;text-decoration:none;">
+                ✈️ Open Voyager AI
+              </a>
+              <p style="font-size:11px;color:#8894A3;margin:20px 0 0;">
+                © {{ year }} Voyager AI · AI-powered travel planning
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

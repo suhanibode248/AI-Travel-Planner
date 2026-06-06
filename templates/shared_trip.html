@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voyager AI — {{ trip.destination }} Itinerary</title>
+  <meta name="description" content="AI-planned {{ trip.days }}-day trip to {{ trip.destination }} on Voyager AI.">
+  <!-- Open Graph for link previews -->
+  <meta property="og:title" content="✈️ {{ trip.destination }} — {{ trip.days }}-day Itinerary">
+  <meta property="og:description" content="AI-planned trip · {{ trip.trip_type }} · ₹{{ '{:,}'.format(trip.budget or 0) }} budget">
+  <meta property="og:type" content="website">
+
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sand: #F7F5F0; --sand-2: #ECE7DC;
+      --text: #14213D; --muted: #617083; --muted-2: #8894A3;
+      --border: #DCD5C8; --amber: #B96F34; --amber-pale: rgba(185,111,52,0.12);
+      --green: #0F766E; --green-pale: rgba(15,118,110,0.11);
+      --card-bg: #fff;
+      --radius: 14px; --shadow: 0 4px 20px rgba(20,33,61,0.08);
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'Manrope', system-ui, sans-serif;
+    }
+    body { font-family: var(--font-body); background: var(--sand); color: var(--text); min-height: 100vh; }
+
+    /* Hero banner */
+    .hero {
+      background: linear-gradient(135deg, #101820 0%, #1a2a3a 100%);
+      padding: 56px 28px 48px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 100%, rgba(185,111,52,0.25), transparent 70%);
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 999px; margin-bottom: 20px;
+    }
+    .hero-title { font-family: var(--font-display); font-size: clamp(32px,5vw,56px); font-weight: 700; color: #fff; margin-bottom: 16px; line-height: 1.1; }
+    .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 28px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 600;
+      padding: 8px 16px; border-radius: 999px; backdrop-filter: blur(8px);
+    }
+    .hero-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .hero-btn {
+      padding: 12px 22px; border-radius: 12px; font-family: var(--font-body);
+      font-size: 14px; font-weight: 800; cursor: pointer; border: none;
+      display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;
+      text-decoration: none;
+    }
+    .hero-btn.primary { background: #fff; color: var(--text); }
+    .hero-btn.primary:hover { background: var(--amber-pale); color: var(--amber); }
+    .hero-btn.outline { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
+    .hero-btn.outline:hover { background: rgba(255,255,255,0.2); }
+
+    /* Content */
+    .page { max-width: 1000px; margin: 0 auto; padding: 36px 24px 80px; }
+
+    /* City tabs */
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+    .tab-btn {
+      padding: 9px 18px; border-radius: 999px; font-family: var(--font-body);
+      font-size: 13px; font-weight: 800; cursor: pointer;
+      border: 1px solid var(--border); background: var(--card-bg); color: var(--muted);
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { border-color: var(--amber); color: var(--amber); }
+    .tab-btn.active { background: var(--text); color: #fff; border-color: var(--text); }
+
+    /* City section */
+    .city-section { display: none; }
+    .city-section.active { display: block; animation: fadeIn 0.3s ease both; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+    /* Cards grid */
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card-full { grid-column: 1/-1; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+    .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px dashed var(--border); }
+    .card-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--green-pale); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .card-title { font-family: var(--font-display); font-size: 17px; font-weight: 700; }
+
+    /* Day blocks */
+    .day-block { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: linear-gradient(135deg,var(--green-pale),var(--amber-pale)); border: 1px solid rgba(15,118,110,0.1); border-radius: 10px; margin-bottom: 8px; font-size: 14px; line-height: 1.55; }
+    .day-num { font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--green); background: #fff; border: 1px solid rgba(15,118,110,0.16); padding: 3px 10px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+
+    /* List items */
+    .list-item { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+    .list-item:last-child { border-bottom: none; }
+    .item-name { font-size: 14px; font-weight: 600; }
+    .item-sub  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .link-btn { padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 800; border: none; cursor: pointer; text-decoration: none; display: inline-block; transition: opacity 0.2s; background: var(--green-pale); color: var(--green); }
+    .link-btn:hover { opacity: 0.8; }
+
+    /* Food tags */
+    .food-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .food-tag { background: var(--amber-pale); border: 1px solid rgba(185,111,52,0.25); color: var(--amber); border-radius: 999px; padding: 5px 12px; font-size: 12px; font-weight: 600; }
+
+    /* Tips */
+    .tips-list { display: flex; flex-direction: column; gap: 10px; }
+    .tip-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.5; }
+    .tip-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    /* Transport */
+    .transport-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    /* Footer CTA */
+    .cta-box { text-align: center; padding: 48px 24px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); margin-top: 36px; box-shadow: var(--shadow); }
+    .cta-title { font-family: var(--font-display); font-size: 26px; color: var(--text); margin-bottom: 10px; }
+    .cta-sub { font-size: 14px; color: var(--muted); margin-bottom: 24px; }
+    .cta-btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; background: var(--text); color: #fff; border-radius: 12px; font-family: var(--font-body); font-size: 15px; font-weight: 800; text-decoration: none; transition: background 0.2s; }
+    .cta-btn:hover { background: var(--green); }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--text); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 600; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); z-index: 9999; white-space: nowrap; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.success { background: #1D9E75; }
+
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+      .card-full { grid-column: 1; }
+      .page { padding: 24px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">✦ Shared Itinerary via Voyager AI</div>
+    <h1 class="hero-title">📍 {{ trip.destination }}</h1>
+    <div class="hero-badges">
+      <div class="hero-badge">📅 {{ trip.days }} days</div>
+      <div class="hero-badge">💰 ₹{{ '{:,}'.format(trip.budget or 0) }}</div>
+      <div class="hero-badge">{{ trip.trip_type or 'Solo' }} trip</div>
+      <div class="hero-badge">📆 {{ trip.created_at.strftime('%d %b %Y') }}</div>
+    </div>
+    <div class="hero-actions">
+      <button class="hero-btn primary" onclick="copyLink()">
+        <i data-lucide="copy" style="width:15px;height:15px"></i> Copy share link
+      </button>
+      <a href="/home" class="hero-btn outline">
+        <i data-lucide="sparkles" style="width:15px;height:15px"></i> Plan my own trip
+      </a>
+    </div>
+  </div>
+
+  <div class="page">
+
+    {% if plan %}
+
+    <!-- Tabs for multi-city -->
+    {% if plan|length > 1 %}
+    <div class="tabs">
+      {% for city_data in plan %}
+      <button id="tab-{{ loop.index0 }}" class="tab-btn {% if loop.first %}active{% endif %}"
+        onclick="switchCity({{ loop.index0 }})">
+        📍 {{ city_data.city }}
+      </button>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% for city_data in plan %}
+    <div id="city-{{ loop.index0 }}" class="city-section {% if loop.first %}active{% endif %}">
+      <div class="grid">
+
+        <!-- Itinerary -->
+        <div class="card card-full">
+          <div class="card-header"><div class="card-icon">📅</div><div class="card-title">Day-by-Day Itinerary — {{ city_data.city }}</div></div>
+          {% set days = city_data.plan.split('\n') %}
+          {% for line in days %}{% if line.strip() %}
+          <div class="day-block">
+            <span class="day-num">Day {{ loop.index }}</span>
+            <span>{{ line | replace('Day ' ~ loop.index ~ ': ', '') }}</span>
+          </div>
+          {% endif %}{% endfor %}
+        </div>
+
+        <!-- Places -->
+        {% if city_data.places %}
+        <div class="card">
+          <div class="card-header"><div class="card-icon">📌</div><div class="card-title">Places to Visit</div></div>
+          {% for p in city_data.places %}
+          <div class="list-item">
+            <div class="item-name">{{ p.name }}</div>
+            <a href="https://www.google.com/maps/search/{{ p.name }} {{ city_data.city }}" target="_blank" class="link-btn">Map →</a>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Hotels -->
+        {% if city_data.hotels %}
+        <div class="card">
+          <div class="card-header"><div class="card-icon">🏨</div><div class="card-title">Where to Stay</div></div>
+          {% for h in city_data.hotels %}
+          <div class="list-item">
+            <div>
+              <div class="item-name">{{ h.name }}</div>
+              <div class="item-sub">{{ h.type | capitalize }}</div>
+            </div>
+            <a href="{{ h.link }}" target="_blank" class="link-btn">Book →</a>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Food -->
+        {% if city_data.food %}
+        <div class="card">
+          <div class="card-header"><div class="card-icon">🍜</div><div class="card-title">What to Eat</div></div>
+          {% if city_data.food.street_food %}
+          <p style="font-size:11px;font-weight:800;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Street Food</p>
+          <div class="food-tags" style="margin-bottom:16px;">
+            {% for f in city_data.food.street_food %}<span class="food-tag">🍴 {{ f }}</span>{% endfor %}
+          </div>
+          {% endif %}
+          {% if city_data.food.restaurants %}
+          <p style="font-size:11px;font-weight:800;letter-spacing:0.07em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Restaurants</p>
+          {% for r in city_data.food.restaurants %}
+          <div class="list-item">
+            <div class="item-name">{{ r.name }}</div>
+            <a href="{{ r.link }}" target="_blank" class="link-btn">Visit →</a>
+          </div>
+          {% endfor %}
+          {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Transport -->
+        {% if city_data.transport and city_data.transport.cabs %}
+        <div class="card">
+          <div class="card-header"><div class="card-icon">🚕</div><div class="card-title">Getting Around</div></div>
+          <div class="transport-row">
+            {% for c in city_data.transport.cabs %}
+            <a href="{{ c.link }}" target="_blank" class="link-btn" style="background:var(--text);color:#fff;">🚕 {{ c.name }}</a>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- AI Tips -->
+        {% if city_data.tips %}
+        <div class="card card-full">
+          <div class="card-header"><div class="card-icon">💡</div><div class="card-title">Travel Tips for {{ city_data.city }}</div></div>
+          <div class="tips-list">
+            {% for tip in city_data.tips %}
+            <div class="tip-item"><span class="tip-icon">✦</span><span>{{ tip }}</span></div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+    {% endfor %}
+
+    {% else %}
+    <div style="text-align:center;padding:64px 24px;">
+      <div style="font-size:48px;margin-bottom:16px;">📭</div>
+      <h3 style="font-family:var(--font-display);font-size:22px;margin-bottom:8px;">No plan data found</h3>
+      <p style="color:var(--muted);font-size:14px;">This itinerary may be incomplete.</p>
+    </div>
+    {% endif %}
+
+    <!-- CTA -->
+    <div class="cta-box">
+      <div class="cta-title">Want to plan your own trip? ✈️</div>
+      <p class="cta-sub">Create a personalised AI itinerary in under 2 minutes — free, no sign-up needed.</p>
+      <a href="/home" class="cta-btn"><i data-lucide="sparkles" style="width:16px;height:16px"></i> Plan my trip on Voyager</a>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    lucide.createIcons();
+
+    function switchCity(index) {
+      document.querySelectorAll('.city-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('city-' + index)?.classList.add('active');
+      document.getElementById('tab-' + index)?.classList.add('active');
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const t = document.getElementById('toast');
+        t.textContent = '📋 Link copied to clipboard!';
+        t.className = 'toast show success';
+        setTimeout(() => t.className = 'toast', 3000);
+      });
+    }
+  </script>
+</body>
+</html>

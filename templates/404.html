@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voyager AI — Page Not Found</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: #F7F5F0;
+      color: #14213D;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      text-align: center;
+    }
+
+    .logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #14213D; margin-bottom: 56px; display: flex; align-items: center; gap: 8px; }
+    .logo-dot { width: 8px; height: 8px; border-radius: 50%; background: #B96F34; }
+
+    .error-num {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(80px, 16vw, 140px);
+      font-weight: 700;
+      color: transparent;
+      -webkit-text-stroke: 2px #DCD5C8;
+      line-height: 1;
+      margin-bottom: 8px;
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+
+    .error-emoji { font-size: 56px; margin-bottom: 24px; }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    p {
+      font-size: 16px;
+      color: #617083;
+      max-width: 380px;
+      line-height: 1.65;
+      margin-bottom: 36px;
+    }
+
+    .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .btn {
+      padding: 13px 24px;
+      border-radius: 12px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn.primary { background: #14213D; color: #fff; }
+    .btn.primary:hover { background: #0F766E; }
+    .btn.outline { background: transparent; color: #14213D; border: 1.5px solid #DCD5C8; }
+    .btn.outline:hover { border-color: #B96F34; color: #B96F34; }
+
+    .suggestions {
+      margin-top: 56px;
+      padding: 24px 28px;
+      background: #fff;
+      border: 1px solid #DCD5C8;
+      border-radius: 14px;
+      max-width: 400px;
+    }
+    .sug-label { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #617083; margin-bottom: 14px; }
+    .sug-links { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .sug-link { background: #F7F5F0; border: 1px solid #DCD5C8; border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 600; color: #14213D; text-decoration: none; transition: all 0.2s; }
+    .sug-link:hover { border-color: #B96F34; color: #B96F34; }
+  </style>
+</head>
+<body>
+
+  <div class="logo">Voyager <span class="logo-dot"></span></div>
+
+  <div class="error-num">404</div>
+  <div class="error-emoji">🗺️</div>
+  <h1>Looks like you're off the map</h1>
+  <p>The page you're looking for doesn't exist or may have been moved. Let's get you back on track.</p>
+
+  <div class="actions">
+    <a href="/home" class="btn primary">✈️ Plan a trip</a>
+    <a href="/" class="btn outline">← Back to home</a>
+  </div>
+
+  <div class="suggestions">
+    <div class="sug-label">Popular destinations to plan</div>
+    <div class="sug-links">
+      <a href="/home" class="sug-link">🏖️ Goa</a>
+      <a href="/home" class="sug-link">🏔️ Manali</a>
+      <a href="/home" class="sug-link">🕌 Jaipur</a>
+      <a href="/home" class="sug-link">🌴 Kerala</a>
+      <a href="/home" class="sug-link">🏛️ Varanasi</a>
+    </div>
+  </div>
+
+</body>
+</html>
