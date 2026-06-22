@@ -1,6 +1,6 @@
 ## Live Demo
 
-🔗 **Deployment Link:** [Click Here to View Project](http://ai-travel-planner-five-dun.vercel.app)
+🔗 **Deployment Link:** [Click Here to View Project](https://ai-travel-planner-five-dun.vercel.app)
 
 You can access and test the complete working project using the live deployment link above.
 
