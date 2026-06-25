@@ -54,4 +54,4 @@ B.Tech CSE (Data Science), RTMNU
 
 10. PROJECT LINK
 GitHub [https://github.com/suhanibode248/AI-Travel-Planner]
-Deployment Link Here []
+Deployment Link Here [https://ai-travel-planner-five-dun.vercel.app/]
