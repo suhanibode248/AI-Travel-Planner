@@ -49,43 +49,4 @@ PROJECT ROOT: ai-travel-planner/
     └── 404.html (4 KB)
         └── Error page for not found routes
 
-================================================================================
-                            KEY DIRECTORIES
-================================================================================
-
-DATA DIRECTORY:
-  - Contains JSON files with travel data (cities, hotels, restaurants, places)
-  - Used for static information and autocomplete features
-  - Total size: ~52 KB
-
-TEMPLATES DIRECTORY:
-  - Contains HTML templates for all web pages
-  - Bootstrap/Jinja2 templating for dynamic content
-  - Total size: ~84 KB
-
-STATIC DIRECTORY:
-  - Frontend assets (JavaScript and CSS)
-  - Client-side validation and API communication
-  - Total size: ~84 KB
-
-INSTANCE DIRECTORY:
-  - Contains SQLite database for user persistence
-  - Stores user credentials and trip data
-  - Total size: ~36 KB
-
-================================================================================
-                            FILE STATISTICS
-================================================================================
-
-Total Project Size: ~1.8 MB
-  - Source Code: ~60 KB
-  - Static Assets: ~84 KB
-  - Data Files: ~52 KB
-  - Database: ~36 KB
-  - Documentation: ~4 KB
-
-Programming Language: Python 3
-Framework: Flask (Web Framework)
-Database: SQLite
-
-================================================================================
+==========================================
